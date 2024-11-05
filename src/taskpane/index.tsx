@@ -9,5 +9,5 @@ const root = rootElement ? createRoot(rootElement) : undefined;
 
 /* Render application after Office initializes */
 Office.onReady(() => {
-  root?.render(<App onSearch={(query) => console.log("Searching for:", query)}/>);
+  root?.render(<App />);
 });
