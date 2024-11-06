@@ -1,25 +1,69 @@
- export async function wordSearch(query:string, matchCase:boolean = false){ await Word.run(async (context) => {
-    console.log("search ran", query, matchCase)
-    // Queue a command to search the document with a wildcard
-    // for any string of characters that starts with 'to' and ends with 'n'.
-    const searchResults = context.document.body.search(query, {matchWildcards: true});
+export type Match = {
+  fullText: string;
+  item: Word.Range;
+};
 
-    // Queue a command to load the search results and get the font property values.
-    searchResults.load('font');
-    
-    // Synchronize the document state by executing the queued commands, 
-    // and return a promise to indicate task completion.
+export type MatchObj = {
+  best: Match[];
+  good: Match[];
+  all: Match[];
+};
+export async function wordSearch(query: string, matchCase: boolean = false) {
+  const matches: MatchObj = {
+    best: [],
+    good: [],
+    all: [],
+  };
+  await Word.run(async (context) => {
+    const searchResults = context.document.body.search(query, { matchCase: matchCase });
+    searchResults.load(["font", "contentRange", "text", "items"]);
     await context.sync();
-    console.log('Found count: ' + searchResults.items.length);
 
-    // Queue a set of commands to change the font for each found item.
-    for (let i = 0; i < searchResults.items.length; i++) {
-        searchResults.items[i].font.highlightColor = 'yellow';
-        searchResults.items[i].font.bold = true;
+    //so each paragraph is only counted once
+    const processedParagraphs = new Set();
+    const processedItems = [];
+
+    for (const item of searchResults.items) {
+      const paragraph = item.paragraphs.getFirst();
+      paragraph.load(["text", "font"]);
+      item.load("font");
+      await context.sync();
+
+      item.font.highlightColor = "yellow";
+      item.font.bold = true;
+      await context.sync();
+
+      const paragraphText = paragraph.text;
+      if (processedParagraphs.has(paragraphText)) continue;
+      processedParagraphs.add(paragraphText);
+
+      const regex = new RegExp(`\\b\\w*${query}\\w*\\b`, "gi");
+      let match: RegExpExecArray | null;
+      while ((match = regex.exec(paragraphText)) !== null) {
+        const fullWord = match[0];
+        await context.sync();
+        if (fullWord === query) {
+          matches.best.push({ fullText: fullWord, item });
+          processedItems.push({ range: item, color: "yellow" });
+        } else if (fullWord.toLowerCase() === query.toLowerCase() && !matchCase) {
+          matches.good.push({ fullText: fullWord, item });
+          processedItems.push({ range: item, color: "gray" });
+        } else if (fullWord.includes(query)) {
+          console.log("include");
+          matches.good.push({ fullText: fullWord, item });
+          processedItems.push({ range: item, color: "gray" });
+        } else if (!matchCase) {
+          matches.all.push({ fullText: fullWord, item });
+          processedItems.push({ range: item, color: "lightgray" });
+        }
+      }
     }
-    console.log(searchResults)
-    
-    // Synchronize the document state by executing the queued commands, 
-    // and return a promise to indicate task completion.
-    await context.sync();
-})}
+
+    const lastItem = searchResults.items[searchResults.items.length - 1];
+
+    // Move the selection to right after the last search result so the app's settings don't change
+    lastItem.select(Word.SelectionMode.end);
+    context.sync();
+  });
+  return matches;
+}

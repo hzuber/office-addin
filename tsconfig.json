@@ -13,22 +13,15 @@
     "outDir": "dist",
     "removeComments": false,
     "sourceMap": true,
-    "target": "es5",
-    "lib": [
-      "es7",
-      "dom"
-    ],
+    "target": "es2015",
+    "lib": ["es7", "dom"],
     "pretty": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "typeRoots": ["node_modules/@types"]
   },
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"],
   "compileOnSave": false,
   "buildOnSave": false,
-  "ts-node": { 
-    "files": true 
+  "ts-node": {
+    "files": true
   }
 }
