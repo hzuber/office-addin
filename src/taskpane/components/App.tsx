@@ -7,12 +7,6 @@ import { clearDocumentFormatting } from "../../utils/clearDocumentFormatting";
 import { SearchResults } from "./SearchResults";
 import { Container } from "@chakra-ui/react";
 
-// export type MatchObj = {
-//   best: Word.Range[];
-//   good: Word.Range[];
-//   all: Word.Range[];
-// };
-
 const App = () => {
   const [styles, setStyles] = useState({ bold: false, highlight: null, color: "auto" });
   const [matches, setMatches] = useState<MatchObj>();
@@ -20,7 +14,6 @@ const App = () => {
 
   async function search(query: string, matchCase: boolean) {
     const items = await wordSearch(query, matchCase);
-    console.log("matches", items);
     setMatches(items);
   }
 
@@ -35,11 +28,7 @@ const App = () => {
     fetchCurrent();
   }, []);
 
-  useEffect(() => {
-    console.log("current", styles);
-  }, [styles]);
-
-  async function reformat() {
+  async function reformatDocStyle() {
     await clearDocumentFormatting(styles.bold, styles.highlight, styles.color);
   }
 
@@ -49,7 +38,7 @@ const App = () => {
       <Container width="100%">
         <SearchBar
           onSearch={search}
-          clearFormatting={reformat}
+          clearFormatting={reformatDocStyle}
           resultLimit={resultLimit}
           setResultLimit={setResultLimit}
         />

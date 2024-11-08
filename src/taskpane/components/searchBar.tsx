@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Input, IconButton, Container, Flex } from "@chakra-ui/react";
+import { Input, IconButton, Flex } from "@chakra-ui/react";
 import { LuSearch } from "react-icons/lu";
 import { IoIosClose } from "react-icons/io";
 import { InputGroup } from "../../components/ui/input-group";
@@ -25,13 +25,12 @@ const SearchBar: React.FC<Props> = ({ onSearch, clearFormatting, resultLimit, se
     clearFormatting();
   }
 
-  const changeLimit = (e) => {
+  const changeLimit = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLimit(Number(e.target.value));
     setResultLimit(Number(e.target.value));
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value.length, query.length);
     e.target.value.length === 0 && clearFormatting();
     setQuery(e.target.value);
   };
@@ -64,7 +63,7 @@ const SearchBar: React.FC<Props> = ({ onSearch, clearFormatting, resultLimit, se
           Case-sensitive search
         </Checkbox>
         <Flex alignItems={"center"} mt="3">
-          <Input type="number" width="50px" mx="2" value={limit} onChange={(e) => changeLimit(e)}></Input>
+          <Input type="number" width="70px" mx="2" value={limit} onChange={(e) => changeLimit(e)}></Input>
           <p>Limit search results</p>
         </Flex>
       </Flex>

@@ -10,11 +10,6 @@ export const SearchResults = ({ matches, resultLimit }: PropTypes) => {
   const resultList: Match[] = [];
   const matchesArray = matches && Object.values(matches);
   if (matchesArray) {
-    // for (var i = 0; i < matchesArray.length; i++) {
-    //   resultList.push(...matchesArray[i]);
-    //   console.log(i);
-    //   if (i === 2) break;
-    // }
     let i = 0;
 
     matchesArray.map((arr) => {
@@ -25,13 +20,8 @@ export const SearchResults = ({ matches, resultLimit }: PropTypes) => {
     });
   }
 
-  const handleClick = async (range: Word.Range) => {
+  const handleLinkClick = async (range: Word.Range) => {
     console.log("nice to have, select on doc", range.text);
-    // await Word.run(async (context) => {
-    //   range.load();
-    //   await context.sync();
-    //   range.select(Word.SelectionMode.start);
-    // });
   };
 
   return (
@@ -40,7 +30,7 @@ export const SearchResults = ({ matches, resultLimit }: PropTypes) => {
       <ul>
         {resultList.map((match, index) => (
           <li key={index}>
-            <button type="button" onClick={() => handleClick(match.item)}>
+            <button type="button" onClick={() => handleLinkClick(match.item)}>
               {match.fullText}
             </button>
           </li>

@@ -23,6 +23,8 @@ export async function wordSearch(query: string, matchCase: boolean = false) {
     const processedParagraphs = new Set();
     const processedItems = [];
 
+    if (searchResults.items.length < 1) return;
+
     for (const item of searchResults.items) {
       const paragraph = item.paragraphs.getFirst();
       paragraph.load(["text", "font"]);
@@ -49,7 +51,6 @@ export async function wordSearch(query: string, matchCase: boolean = false) {
           matches.good.push({ fullText: fullWord, item });
           processedItems.push({ range: item, color: "gray" });
         } else if (fullWord.includes(query)) {
-          console.log("include");
           matches.good.push({ fullText: fullWord, item });
           processedItems.push({ range: item, color: "gray" });
         } else if (!matchCase) {
