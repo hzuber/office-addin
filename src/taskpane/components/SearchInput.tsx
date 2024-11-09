@@ -10,13 +10,27 @@ interface SearchInputProps {
   onSearch: () => void;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ query, onChange, onSearch }) => (
-  <Flex width="100%" maxWidth="400px">
-    <Input variant="flushed" placeholder="Search document" value={query} onChange={onChange} />
-    <IconButton variant="outline" size={"sm"} aria-label="Launch search" onClick={onSearch}>
-      <LuSearch />
-    </IconButton>
-  </Flex>
-);
+const SearchInput: React.FC<SearchInputProps> = ({ query, onChange, onSearch }) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSearch(); // Trigger search on Enter key
+    }
+  };
+
+  return (
+    <Flex width="100%" maxWidth="400px">
+      <Input
+        variant="flushed"
+        placeholder="Search document"
+        value={query}
+        onChange={onChange}
+        onKeyDown={handleKeyDown} // Listen for Enter key
+      />
+      <IconButton variant="outline" size={"sm"} aria-label="Launch search" onClick={onSearch}>
+        <LuSearch />
+      </IconButton>
+    </Flex>
+  );
+};
 
 export default SearchInput;
