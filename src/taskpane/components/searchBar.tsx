@@ -1,9 +1,11 @@
-import React, { ChangeEvent, useState } from "react";
-import { Input, IconButton, Flex } from "@chakra-ui/react";
-import { LuSearch } from "react-icons/lu";
-import { IoIosClose } from "react-icons/io";
-import { InputGroup } from "../../components/ui/input-group";
-import { Checkbox } from "../../components/ui/checkbox";
+// SearchBar.tsx
+
+import React from "react";
+import { Flex, Input } from "@chakra-ui/react";
+import { useSearchState } from "../../hooks/useSearchState";
+import SearchInput from "./SearchInput";
+import ClearButton from "./ClearButton";
+import CaseCheckbox from "./CaseCheckbox";
 
 interface Props {
   onSearch: (query: string, matchCase: boolean) => Promise<void>;
@@ -13,32 +15,11 @@ interface Props {
 }
 
 const SearchBar: React.FC<Props> = ({ onSearch, clearFormatting, resultLimit, setResultLimit }) => {
-  const defaultPlaceholder = "Search document";
-  const [query, setQuery] = useState("");
-  const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
-  const [caseMatch, setCaseMatch] = useState(false);
-  const [limit, setLimit] = useState(resultLimit);
-
-  async function reset() {
-    setQuery("");
-    setPlaceholder(defaultPlaceholder);
-    clearFormatting();
-  }
-
-  const changeLimit = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLimit(Number(e.target.value));
-    setResultLimit(Number(e.target.value));
-  };
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.target.value.length === 0 && clearFormatting();
-    setQuery(e.target.value);
-  };
-
-  const handleClear = () => {
-    reset();
-    onSearch("", caseMatch);
-  };
+  const { query, caseMatch, limit, handleQueryChange, handleLimitChange, toggleCaseMatch, reset } = useSearchState(
+    resultLimit,
+    setResultLimit,
+    clearFormatting
+  );
 
   const handleSearch = () => {
     clearFormatting();
@@ -47,23 +28,14 @@ const SearchBar: React.FC<Props> = ({ onSearch, clearFormatting, resultLimit, se
 
   return (
     <Flex width="100%" direction="column" alignItems="flex-end">
-      <Flex width="100%" my="4" justify={"flex-start"} gap="2" alignItems={"flex-end"}>
-        <IconButton variant={"surface"} size={"xs"} aria-label="Cancel search" onClick={() => handleClear()}>
-          <IoIosClose />
-        </IconButton>
-        <InputGroup marginStart={"auto"} maxWidth={"400px"} width={"100%"}>
-          <Input variant="flushed" placeholder={placeholder} value={query} onChange={(e) => handleInputChange(e)} />
-        </InputGroup>
-        <IconButton variant="outline" size={"sm"} aria-label="Launch search" onClick={() => handleSearch()}>
-          <LuSearch />
-        </IconButton>
+      <Flex width="100%" my="4" justify="flex-start" gap="2" alignItems="flex-end">
+        <ClearButton onClear={() => reset(onSearch, caseMatch)} />
+        <SearchInput query={query} onChange={handleQueryChange} onSearch={handleSearch} />
       </Flex>
       <Flex width="100%" direction="column" alignItems="flex-end">
-        <Checkbox variant={"subtle"} checked={caseMatch} onCheckedChange={(e) => setCaseMatch(!!e.checked)}>
-          Case-sensitive search
-        </Checkbox>
-        <Flex alignItems={"center"} mt="3">
-          <Input type="number" width="70px" mx="2" value={limit} onChange={(e) => changeLimit(e)}></Input>
+        <CaseCheckbox isChecked={caseMatch} onChange={toggleCaseMatch} />
+        <Flex alignItems="center" mt="3">
+          <Input type="number" width="70px" mx="2" value={limit} onChange={handleLimitChange} />
           <p>Limit search results</p>
         </Flex>
       </Flex>

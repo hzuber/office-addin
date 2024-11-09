@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Provider } from "../../components/ui/provider";
 import SearchBar from "./SearchBar";
 import { MatchObj, wordSearch } from "../../utils/wordSearch";

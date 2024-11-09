@@ -1,4 +1,4 @@
-import { Container } from "@chakra-ui/react";
+import { Container, Heading } from "@chakra-ui/react";
 import { Match, MatchObj } from "../../utils/wordSearch";
 
 interface PropTypes {
@@ -26,7 +26,7 @@ export const SearchResults = ({ matches, resultLimit }: PropTypes) => {
 
   return (
     <Container width="100%" mt="4">
-      <h3>Top {resultLimit} search results in order of match precision</h3>
+      <Heading size="md">Top {resultLimit} search results in order of match precision:</Heading>
       <ul>
         {resultList.map((match, index) => (
           <li key={index}>
