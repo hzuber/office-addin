@@ -72,5 +72,5 @@ The components/ui folder is one added by [Chakra](https://www.chakra-ui.com/docs
    These search terms are then passed on to the search results component, which maps through them in order and displays the text.
 
 ## 🥳 And that's about it!
-Given more time to figure it out I would like to make it so that if the user clicks on the search result, it will highlight it on the document. The challenge with that is the `Range` object is only stored in the context in which it's created. So when it's passed on to another component, Word no longer knows where on the document it was found. 
+Given more time to figure it out I would like to make it so that if the user clicks on the search result, it will focus on it in the document. The challenge with that is the `Range` object is only stored in the context in which it's created. So when it's passed on to another component, Word no longer knows where on the document it was found. 
 I hope you enjoyed this little demo. Feel free to check out the rest of my [GitHub](https://github.com/hzuber) or my [LinkedIn](https://www.linkedin.com/in/hzuber-dev/)
